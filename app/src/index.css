@@ -5,3 +5,14 @@
   position: absolute;
   top: 0 ;
 }
+
+.info{
+  background-color: rgb(0, 0, 0, 0.5);
+  border-radius: 15 px;
+  color: white;
+  left: 20px;
+  padding: 10px;
+  position: fixed;
+  top: 20px;
+  z-index: 99;
+}
