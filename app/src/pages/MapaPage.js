@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
+import React from 'react';
+import { useMapbox } from '../hooks/useMapbox';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaGVsaXNtb250ZXMiLCJhIjoiY2tvcWNrd3ljMDdkZDJvbWlhcmdtZTRseSJ9.TvCv9ZgSZ8sDa6XadQZvrQ';
 const puntoInicial = {
   lng: -122.4725,
   lat: 37.8010,
@@ -9,30 +8,7 @@ const puntoInicial = {
 }
 
 export const MapaPage = () => {
-  const mapDiv = useRef();
-  // const [ mapa, setMapa] = useState();
-  const mapa = useRef();
-  const [coords, setCoords] = useState(puntoInicial);
-  useEffect(() => {
-    const map = new mapboxgl.Map({
-      container: mapDiv.current,
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [puntoInicial.lng, puntoInicial.lat],
-      zoom: puntoInicial.zoom
-    });
-    mapa.current = map;
-  }, [])
-  //Obtener las coordenadas
-  useEffect(() => {
-    mapa.current?.on('move', ()=>{
-      const {lng, lat} = mapa.current?.getCenter();
-      setCoords({
-        lng: lng.toFixed(4),
-        lat: lat.toFixed(4),
-        zoom: mapa.current?.getZoom().toFixed(2)
-      })
-    });
-  }, [mapa])
+  const {setRef, coords} = useMapbox(puntoInicial);
   return (
     <>
       <div className="info">
@@ -40,10 +16,8 @@ export const MapaPage = () => {
       </div>
       <div
         className="mapContainer"
-        ref={mapDiv} 
-      >
-        asd
-      </div>
+        ref={setRef}
+      />
     </>
   )
 }
