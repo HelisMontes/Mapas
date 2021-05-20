@@ -17,6 +17,20 @@ export const useMapbox = (puntoInicial) => {
   //Mapas y coordenadas
   const mapa = useRef();
   const [coords, setCoords] = useState(puntoInicial);
+
+  //Funcion para agregar marcadores
+  const agregarMarcador = useCallback((event) => {
+    const {lng, lat} = event.lngLat;
+
+      const marker =  new mapboxgl.Marker();
+      marker.id = v4();
+      marker
+        .setLngLat([lng, lat])  //Asignamos las cordenadas
+        .addTo(mapa.current)    //Asignamos el marker a un mapa
+        .setDraggable(true)     //Para que el marke se pueda mover por el mapa
+      // Almacenar los marcadores
+      marcadores.current[marker.id] = marker
+  }, []);
   
   useEffect(() => {
     const map = new mapboxgl.Map({
@@ -40,19 +54,8 @@ export const useMapbox = (puntoInicial) => {
     });
   }, []);
   useEffect(() => {
-    mapa.current?.on('click', (event) => {
-      const {lng, lat} = event.lngLat;
-
-      const marker =  new mapboxgl.Marker();
-      marker.id = v4();
-      marker
-        .setLngLat([lng, lat])  //Asignamos las cordenadas
-        .addTo(mapa.current)    //Asignamos el marker a un mapa
-        .setDraggable(true)     //Para que el marke se pueda mover por el mapa
-      // Almacenar los marcadores
-      marcadores.current[marker.id] = marker
-    });
-  }, []) 
+    mapa.current?.on('click', agregarMarcador);
+  }, [agregarMarcador]);
   
-  return{ setRef, coords }
+  return{ agregarMarcador, coords, setRef }
 }
