@@ -47,6 +47,9 @@ export const useMapbox = (puntoInicial) => {
       marker.on('drag', ({target}) => {
         const {id} = target;
         const {lng, lat} = target.getLngLat();
+        
+        //Si el marcador sufre un cambio de se emite mediante el next
+        movimientoMarcador.current.next({ id, lng, lat });
       });
   }, []);
   
@@ -77,7 +80,8 @@ export const useMapbox = (puntoInicial) => {
   
   return{ 
     agregarMarcador, 
-    coords,
+    coords, 
+    movimientoMarcador$: movimientoMarcador.current,
     nuevoMarcador$: nuevoMarcador.current,
     setRef 
   }
