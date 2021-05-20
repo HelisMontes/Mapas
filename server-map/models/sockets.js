@@ -10,6 +10,7 @@ class Sockets {
     // On connection
     this.io.on('connection', (socket) => { 
       // Escuchar Evento
+      console.log('Conectado.....')
     });
   }
 }
