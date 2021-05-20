@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import { v4 } from 'uuid';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaGVsaXNtb250ZXMiLCJhIjoiY2tvcWNrd3ljMDdkZDJvbWlhcmdtZTRseSJ9.TvCv9ZgSZ8sDa6XadQZvrQ';
 
@@ -10,6 +11,10 @@ export const useMapbox = (puntoInicial) => {
     mapDiv.current = node;
   }, []);
   
+  //Referencia de los marcadores
+  const marcadores = useRef({});
+
+  //Mapas y coordenadas
   const mapa = useRef();
   const [coords, setCoords] = useState(puntoInicial);
   
@@ -25,7 +30,7 @@ export const useMapbox = (puntoInicial) => {
   
   //Obtener las coordenadas
   useEffect(() => {
-    mapa.current?.on('move', ()=>{
+    mapa.current?.on('move', () => {
       const {lng, lat} = mapa.current?.getCenter();
       setCoords({
         lng: lng.toFixed(4),
@@ -33,7 +38,21 @@ export const useMapbox = (puntoInicial) => {
         zoom: mapa.current?.getZoom().toFixed(2)
       })
     });
-  }, []); 
+  }, []);
+  useEffect(() => {
+    mapa.current?.on('click', (event) => {
+      const {lng, lat} = event.lngLat;
+
+      const marker =  new mapboxgl.Marker();
+      marker.id = v4();
+      marker
+        .setLngLat([lng, lat])  //Asignamos las cordenadas
+        .addTo(mapa.current)    //Asignamos el marker a un mapa
+        .setDraggable(true)     //Para que el marke se pueda mover por el mapa
+      // Almacenar los marcadores
+      marcadores.current[marker.id] = marker
+    });
+  }, []) 
   
   return{ setRef, coords }
 }
