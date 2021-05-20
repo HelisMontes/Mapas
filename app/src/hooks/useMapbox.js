@@ -24,11 +24,11 @@ export const useMapbox = (puntoInicial) => {
   const [coords, setCoords] = useState(puntoInicial);
 
   //Funcion para agregar marcadores
-  const agregarMarcador = useCallback((event) => {
-    const {lng, lat} = event.lngLat;
+  const agregarMarcador = useCallback((event, id) => {
+    const {lng, lat} = event.lngLat || event;
 
       const marker =  new mapboxgl.Marker();
-      marker.id = v4();
+      marker.id = id ?? v4();
       marker
         .setLngLat([lng, lat])  //Asignamos las cordenadas
         .addTo(mapa.current)    //Asignamos el marker a un mapa
@@ -36,12 +36,15 @@ export const useMapbox = (puntoInicial) => {
       // Almacenar los marcadores
       marcadores.current[marker.id] = marker;
      
-      // Si hay un nuevo marcador se emite mediante el next
-      nuevoMarcador.current.next({
-        id: marker.id,
-        lng, 
-        lat
-      });
+      // Si el id no existe es porque estoy creando un marcador desde el frontend
+      if(!id) {
+        // Si hay un nuevo marcador se emite mediante el next
+        nuevoMarcador.current.next({
+          id: marker.id,
+          lng, 
+          lat
+        });
+      }
 
       //Escuchar movimiento del marcador
       marker.on('drag', ({target}) => {
