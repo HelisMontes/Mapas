@@ -10,7 +10,21 @@ class Sockets {
     // On connection
     this.io.on('connection', (socket) => { 
       // Escuchar Evento
-      console.log('Conectado.....')
+      
+      // Marcadores activos
+      socket.emit('marcadores-activos', this.marcadores.activos);
+
+      // Nuevo marcador
+      socket.on('marcador-nuevo', (marcador) => {
+        this.marcadores.agregarMarcador(marcador);
+
+        /** 
+         * Se crea un nuevo marcardor en el mapa a los demas usuarios conectados
+         * a excepción del usuario que lo creo
+         * */ 
+        socket.broadcast.emit('marcador-nuevo', marcador);
+      });
+
     });
   }
 }

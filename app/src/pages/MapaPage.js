@@ -13,15 +13,22 @@ export const MapaPage = () => {
   const {socket} = useContext(SocketContext);
   useEffect(() => {
     nuevoMarcador$.subscribe(marker => {
-      console.log(marker);
+      socket.emit('marcador-nuevo', marker);
     });
-  }, [nuevoMarcador$])
+  }, [nuevoMarcador$, socket]);
   
   useEffect(() => {
     movimientoMarcador$.subscribe(marker => {
       console.log(marker);
     });
-  }, [movimientoMarcador$])
+  }, [movimientoMarcador$]);
+
+  //Escuchar nuevos marcadores
+  useEffect(() => {
+    socket.on('marcador-nuevo', (marker) =>{
+      console.log(marker);
+    })
+  }, [socket]);
 
   return (
     <>
