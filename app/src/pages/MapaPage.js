@@ -36,9 +36,9 @@ export const MapaPage = () => {
   //Escuchar nuevos marcadores
   useEffect(() => {
     socket.on('marcador-nuevo', (marker) =>{
-      console.log(marker);
+      agregarMarcador(marker);
     })
-  }, [socket]);
+  }, [socket, agregarMarcador]);
 
   return (
     <>
