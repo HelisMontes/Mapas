@@ -24,6 +24,17 @@ class Sockets {
          * */ 
         socket.broadcast.emit('marcador-nuevo', marcador);
       });
+      
+      // Actualizar coordenadas del marcador 
+      socket.on('marcador-actualizado', (marcador) => {
+        this.marcadores.actualizarMarcador (marcador);
+
+        /** 
+         * Se notifica la actualización del marcador en movimiento a los demás usuarios
+         * a excepción del usuario que lo esta moviendo.
+         * */ 
+        socket.broadcast.emit('marcador-actualizado', marcador);
+      });
 
     });
   }
